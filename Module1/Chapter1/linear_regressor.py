@@ -52,3 +52,31 @@ plt.plot(X_test,y_test_pred,color = 'black',linewidth = 4)
 plt.title('Test data')
 plt.show()
 
+#测试精度
+import sklearn.metrics as sm
+
+print("Mean absolute error = ",round(sm.mean_absolute_error(y_test,y_test_pred),2))
+'''
+平均绝对误差
+'''
+print("Mean squared error = ",round(sm.mean_squared_error(y_test,y_test_pred),2))
+'''
+平均方差
+'''
+print("Median absolute error = ",round(sm.median_absolute_error(y_test,y_test_pred),2))
+'''
+中间绝对误差
+'''
+print("Explain variance score = ",round(sm.explained_variance_score(y_test,y_test_pred),2))
+'''
+解释方差分数
+'''
+print("R2 score = ",round(sm.r2_score(y_test,y_test_pred),2))
+'''
+R2分数
+'''
+'''
+一般为了避免繁琐
+仅仅挑选一到两个指标测试精度
+常用绝对方差（越低越好）和解释方差分数（越高越好）
+'''
