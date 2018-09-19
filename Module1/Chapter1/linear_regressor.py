@@ -80,3 +80,27 @@ R2分数
 仅仅挑选一到两个指标测试精度
 常用绝对方差（越低越好）和解释方差分数（越高越好）
 '''
+
+#模型持久性
+#import cPickle as pickle
+import pickle 
+output_model_file = 'saved_model.pkl'
+#with open(output_model_file,'w')as f:
+with open(output_model_file,'wb')as f:
+	pickle.dump(linear_regressor,f)
+'''
+储存为saved_model.pkl
+'''
+
+#with open(output_model_file,'r')as f:
+with open(output_model_file,'rb')as f:
+	model_linregr = pickle.load(f)
+
+y_test_pred_new = model_linregr.predict(X_test)
+print("\nNew mean absolute error = ",round(sm.mean_absolute_error(y_test,y_test_pred_new),2))
+'''
+以上是储存和读取文件的全部代码
+python2语法和python3语法略有不同
+注释掉的代码是书中给出的代码，在python3上运行会报错
+稍微修改后运行就能正常
+'''
