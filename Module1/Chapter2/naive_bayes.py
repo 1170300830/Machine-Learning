@@ -2,6 +2,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.naive_bayes import GaussianNB
+from sklearn import cross_validation
 
 #定义绘图功能
 def plot_classifier(classifier,X,y):
@@ -60,6 +61,8 @@ if __name__ == '__main__':
 
 	X = np.array(X)
 	y = np.array(y)
+
+	#X_train, X_test, y_train, y_test = cross_validation.train_test_split
 	#建造简单贝叶斯回归
 	classifier_gaussiannb = GaussianNB()
 	classifier_gaussiannb.fit(X,y)
@@ -71,4 +74,43 @@ if __name__ == '__main__':
 	print("Accurary of the classifier = ",round(accuracy,2),"%")
 
 	#绘制数据和边界
-	plot_classifier(classifier_gaussiannb,X,y)
+	#plot_classifier(classifier_gaussiannb,X,y)
+
+	#分割训练和测试数据
+	X_train,X_test,y_train,y_test = cross_validation.train_test_split(X,y,test_size = 0.25,random_state = 5)
+	classifier_gaussiannb_new = GaussianNB()
+	classifier_gaussiannb_new.fit(X_train,y_train)
+
+	y_test_pred = classifier_gaussiannb_new.predict(X_test)
+
+	accuracy = 100.0*(y_test == y_test_pred).sum()/X_test.shape[0]
+	print("Accurary of the classifier = ",round(accuracy,2),"%")
+	plot_classifier(classifier_gaussiannb_new,X_test,y_test)
+
+	#用交叉验证评估精度
+	'''
+	过度拟合表示虽然在已有训练集上分类表型良好
+	但在未知的数据上分类结果可能较差
+	采用交叉验证的方法可以部分解决这个问题
+	'''
+	'''
+	衡量机器学习的三个指标
+	精度，召回率和f1分数
+	精度是正确分类数据比全体数据
+	召回率是正例中被分对的比例
+	f1分数综合两者得出
+	'''
+
+	num_validations = 5
+	accuracy =cross_validation.cross_val_score(classifier_gaussiannb,X,y,scoring = 'accuracy',cv = num_validations)
+	print("Accurary :",str(round(100*accuracy.mean(),2)),"%")
+
+	f1 = cross_validation.cross_val_score(classifier_gaussiannb,X,y,scoring = 'f1_weighted',cv = num_validations)
+	print("F1 :",str(round(100*f1.mean(),2)),"%")
+
+	precision = cross_validation.cross_val_score(classifier_gaussiannb,X,y,scoring = 'precision_weighted',cv = num_validations)
+	print("Precision :",str(round(100*precision.mean(),2)),"%")
+
+	recall = cross_validation.cross_val_score(classifier_gaussiannb,X,y,scoring = 'recall_weighted',cv = num_validations)
+	print("Recall :",str(round(100*recall.mean(),2)),"%")
+
