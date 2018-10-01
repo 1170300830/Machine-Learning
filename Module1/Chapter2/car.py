@@ -121,3 +121,10 @@ plt.xlabel('Number of training samples')
 plt.ylabel('Accuracy')
 plt.show()
 
+'''
+小的样本集看似分类精度更好
+但容易出现过度拟合的问题
+大的样本集则需要花费更多资源
+所以应该权衡之后做出选择
+'''
+
