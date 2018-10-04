@@ -31,4 +31,51 @@ plt.figure()
 plt.scatter(class_0[:,0], class_0[:,1], facecolors='black', edgecolors='black', marker='s')
 plt.scatter(class_1[:,0], class_1[:,1], facecolors='None', edgecolors='black', marker='s')
 plt.title('Input data')
+
+'''
+在图片的结果中，包含实心正方形和空心正方形
+在机器学习行话中，我们说数据包含两个类
+我们的目的是将实心正方形从空心正方形里分离出来
+'''
+
+#分割数据集为训练和测试数据
+from sklearn import cross_validation
+from sklearn.svm import SVC
+
+X_train,X_test,y_train,y_test = cross_validation.train_test_split(X,y,test_size = 0.25,random_state = 5)
+
+#用线性内核初始化
+params = {'kernel':'linear'}
+classifier = SVC(**params)
+
+#训练线性SVM分类器
+classifier.fit(X_train,y_train)
+
+#查看分类器效果
+utilities.plot_classifier(classifier,X_train,y_train,'Training dataset')
+'''
+书上没给utilities.plot_classifier的写法
+我直接粘贴了课程附带里的，没有自己写
+我详细阅读给出的代码，大体与前一章节绘图方式一致
+'''
+
+#测试在测试集上的效果
+y_test_pred = classifier.predict(X_test)
+utilities.plot_classifier(classifier,X_test,y_test,'Test dataset')
 plt.show()
+
+#计算训练集的精度
+from sklearn.metrics import classification_report
+target_names = ['Class'+str(int(i)) for i in set(y)]
+print("\n"+"#"*30)
+'''
+还有这种操作？
+'''
+print("\nClassifier performance on training dataset\n")
+print(classification_report(y_train,classifier.predict(X_train),target_names = target_names))
+print("#"*30+"\n")
+
+print ("#"*30)
+print ("\nClassification report on test dataset\n")
+print (classification_report(y_test, y_test_pred, target_names=target_names))
+print ("#"*30 + "\n")
