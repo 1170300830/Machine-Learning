@@ -14,13 +14,19 @@
 支持向量机是可监督学习模型中用于建造分类器和回归器的
 一个支持向量机通过求解一系列的数学等式可以发现分割两组点的最佳边界
 '''
-
+'''
+有时会出现一个数据集数据个数明显大于别的数据集
+这样分类器就会带有偏见
+分类的结果无法反映数据的真实情况
+处理这种现象非常关键
+'''
 import numpy as np 
 import matplotlib.pyplot as plt 
 import utilities
 
 #加载输入数据
-input_file = 'data_multivar.txt'
+#input_file = 'data_multivar.txt'
+input_file = 'data_multivar_imbalance.txt'
 X,y = utilities.load_data(input_file)
 
 #分割数据为不同的类
@@ -38,14 +44,32 @@ plt.title('Input data')
 我们的目的是将实心正方形从空心正方形里分离出来
 '''
 
+
 #分割数据集为训练和测试数据
 from sklearn import cross_validation
 from sklearn.svm import SVC
 
 X_train,X_test,y_train,y_test = cross_validation.train_test_split(X,y,test_size = 0.25,random_state = 5)
 
-#用线性内核初始化
-params = {'kernel':'linear'}
+#用内核初始化
+#params = {'kernel':'linear'}
+'''
+进行数据平衡的操作的时候
+直接进行线性分类效果非常差
+它没有分类出数量较小的那一类
+其它两类效果虽然比线性分类要好，但也是很难让人满意
+'''
+#params = {'kernel':'poly','degree':3}
+#程度为3的多项式功能
+#params = {'kernel':'rbf'}
+
+params = {'kernel':'linear','class_weight': 'balanced'}
+#params = {'kernel':'poly','degree':3,'class_weight': 'balanced'}
+#params = {'kernel':'rbf','class_weight': 'balanced'}
+'''
+数据权重平衡了以后好很多
+但是代码传的不是书中给的auto而是balanced
+'''
 classifier = SVC(**params)
 
 #训练线性SVM分类器
